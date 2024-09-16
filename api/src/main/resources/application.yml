@@ -1,0 +1,60 @@
+## YAML Template.
+---
+server:
+  port:
+    8888
+    
+spring:
+  main:
+    banner-mode: off
+    allow-bean-definition-overriding: true
+  data:
+    rest: 
+      base-path: /api
+  devtools:
+    livereload:
+      enabled: true 
+    restart:
+      enabled: true
+      additional-paths: /src/main/*         
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: bb
+    password: bb
+    url: jdbc:mysql://localhost:3306/bb
+  jpa:
+    properties:
+      hibernate:
+          show_sql: false
+          dialect: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: update
+
+springdoc:
+  swagger-ui:
+    path: /api/swagger-ui.html
+    enable : true
+  api-docs:
+    path : /api
+
+logging:
+  level:
+    org.springframework: ERROR
+    com.dev.validator: INFO
+    org.hibernate.SQL: OFF
+    org.springdoc: INFO
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"
+    file: "%d %p %c{1.} [%t] %m%n"
+  file: app.log
+
+application-description: Баланс тела
+application-version: 1.0
+
+#management:
+#  server:
+#    port: 9090
+#  endpoints:
+#   web:
+#    exposure:
+#     include: openapi, swagger-ui
