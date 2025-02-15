@@ -50,9 +50,10 @@ open class Security(@param:Value("\${keycloak.publicKey}") private val publicKey
                 c.requestMatchers(mvcMatcherBuilder.pattern("/error")).permitAll()
                     .requestMatchers(HttpMethod.GET, "/admin/**").hasRole("ADMIN")
                     .requestMatchers(mvcMatcherBuilder.pattern("/system/**")).authenticated()
+                    //.anyRequest().permitAll()
                     .and()
                     .addFilterBefore(JwtHeaderEnrichmentFilter(publicKey), UsernamePasswordAuthenticationFilter::class.java)
-//                    .anyRequest().permitAll()
+
             }
         .build();
     }

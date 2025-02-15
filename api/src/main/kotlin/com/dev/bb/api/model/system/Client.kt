@@ -4,15 +4,12 @@ import com.dev.bb.api.dto.admin.ClientDto
 import jakarta.persistence.*
 import java.time.LocalDateTime
 import com.dev.bb.api.model.system.Branch
+import com.dev.bb.model.Domain
 import kotlin.random.Random
 
 @Entity
 @Table(name = "clients")
 data class Client(
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0,
-
     @Column(nullable = false)
     var name: String,
 
@@ -26,15 +23,9 @@ data class Client(
     @JoinColumn(name = "branch_id")
     var branch: Branch,
 
-    @Column(nullable = false)
-    var createdAt: LocalDateTime = LocalDateTime.now(),
-
-    @Column(nullable = false)
-    var updatedAt: LocalDateTime = LocalDateTime.now()
-) {
+) : Domain() {
     companion object {
         fun rand()= Client(
-            id = Random.nextLong(),
             name = listOf("Иван","Андрей").random(),
             email = "${Random.nextInt()}@mail.ru",
             phone = Random.toString(),

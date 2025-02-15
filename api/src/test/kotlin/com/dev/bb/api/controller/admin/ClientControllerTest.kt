@@ -68,7 +68,7 @@ class ClientControllerTest(@Autowired val mockMvc: MockMvc) {
     }
 
     @Test
-    fun `should create new client when valid data and permissions`() {
+    fun `should create new client when valid data`() {
         // given
         val createDto = ClientDto(
             name = "Test Client",
@@ -78,12 +78,8 @@ class ClientControllerTest(@Autowired val mockMvc: MockMvc) {
         )
         val userName = "test-user"
         
-        `when`(clientRepository.save(any()))
-            .thenAnswer { invocation ->
-                val client = invocation.getArgument<Client>(0)
-                client.copy(id = 1L)
-            }
-            
+        `when`(clientService.createClient(createDto)).thenReturn(1L)
+
         // when & then
         mockMvc.post("/admin/client") {
             contentType = MediaType.APPLICATION_JSON
@@ -93,7 +89,7 @@ class ClientControllerTest(@Autowired val mockMvc: MockMvc) {
             status { isCreated() }
             content {
                 contentType(MediaType.APPLICATION_JSON)
-                jsonPath("$.id") { exists() }
+                jsonPath("$.id") { value(1) }
                 jsonPath("$.name") { value(createDto.name) }
                 jsonPath("$.email") { value(createDto.email) }
                 jsonPath("$.phone") { value(createDto.phone) }

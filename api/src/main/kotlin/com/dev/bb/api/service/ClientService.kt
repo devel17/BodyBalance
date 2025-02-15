@@ -15,7 +15,7 @@ class ClientService(private val clientRepository: ClientRepository, private val 
         return clientRepository.findAll()
     }
 
-    override fun createClient(clientDto: ClientDto): Long {
+    override fun createClient(clientDto: ClientDto): Long? {
         val client = Client(
             name = clientDto.name,
             email = clientDto.email,

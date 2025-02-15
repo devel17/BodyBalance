@@ -6,6 +6,8 @@ import com.dev.bb.api.service.IClientService
 import com.dev.bb.api.model.system.Client
 import com.dev.bb.api.model.system.toDto
 import com.dev.bb.api.repository.system.BranchRepository
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -37,7 +39,8 @@ class ClientController(
     fun createClient(
         @RequestHeader("X-User-Id") userName: String,
         @Valid @RequestBody clientDto: ClientDto
-    ): Long {
-        return clientService.createClient(clientDto)
+    ): ResponseEntity<Long?> {
+        val clientId = clientService.createClient(clientDto)
+        return ResponseEntity(clientId, HttpStatus.CREATED)
     }
 }

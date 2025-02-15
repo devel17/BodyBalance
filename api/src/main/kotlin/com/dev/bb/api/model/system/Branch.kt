@@ -1,15 +1,12 @@
 package com.dev.bb.api.model.system
 
+import com.dev.bb.model.Domain
 import jakarta.persistence.*
 import java.time.LocalDateTime
 
 @Entity
 @Table(name = "branches")
 data class Branch(
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0,
-    
     @Column(nullable = false)
     var name: String = "",
     
@@ -26,12 +23,7 @@ data class Branch(
     @OneToMany(mappedBy = "branch", cascade = [CascadeType.ALL])
     var clients: MutableList<Client> = mutableListOf(),
     
-    @Column(nullable = false)
-    var createdAt: LocalDateTime = LocalDateTime.now(),
-    
-    @Column(nullable = false)
-    var updatedAt: LocalDateTime = LocalDateTime.now()
-) {
+) : Domain() {
     companion object {
         val EMPTY = Branch()
     }

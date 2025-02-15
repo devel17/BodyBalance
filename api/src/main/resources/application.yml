@@ -1,8 +1,10 @@
 ## YAML Template.
 ---
 server:
-  port:
-    8888
+  port: 8888
+  shutdown: graceful
+  servlet:
+    context-path: /api
     
 spring:
   main:
