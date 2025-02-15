@@ -8,27 +8,44 @@ spring:
   main:
     banner-mode: off
     allow-bean-definition-overriding: true
-  data:
-    rest: 
-      base-path: /api
   devtools:
     livereload:
       enabled: true 
     restart:
       enabled: true
       additional-paths: /src/main/*         
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    username: bb
+#    password: bb
+#    url: jdbc:mysql://localhost:3306/bb
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: bb
-    password: bb
-    url: jdbc:mysql://localhost:3306/bb
+    driver-class-name: org.postgresql.Driver
+    url: ${PSQL_URL:jdbc:postgresql://localhost:5432/bb}
+    username: ${PSQL_USERNAME:bb}
+    password: ${PSQL_PASSWORD:bb}
   jpa:
     properties:
       hibernate:
           show_sql: false
-          dialect: org.hibernate.dialect.MySQLDialect
+          dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8103/realms/bb
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8103/realms/bb
+            user-name-attribute: preferred_username
+        registration:
+          keycloak:
+            client-id: api
+            client-secret: aHtXRkUUYwemNNEgd8gyAPAVyxrslKFL
+            scope: openid
 
 springdoc:
   swagger-ui:
@@ -39,6 +56,8 @@ springdoc:
 
 logging:
   level:
+    org.springframework.security: TRACE
+    org.springframework.web.filter.CorsFilter: DEBUG
     org.springframework: ERROR
     com.dev.validator: INFO
     org.hibernate.SQL: OFF
@@ -51,10 +70,25 @@ logging:
 application-description: Баланс тела
 application-version: 1.0
 
-#management:
-#  server:
-#    port: 9090
-#  endpoints:
-#   web:
-#    exposure:
-#     include: openapi, swagger-ui
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  metrics:
+    tags:
+      application: bb
+    export:
+      prometheus:
+        enabled: true
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true
+
+keycloak:
+  realm: bb
+  username: admin
+  password: admin
+  url: http://localhost:8103
+  #Keycloak admin panel -> RealmSettings -> Keys -> RSA(RS256) -> PublicKey
+  publicKey: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqGlejkH7NflxgM5mq9BAAaEgIj18GDJ3I3KRvk0z0GYqAi4qjQdAnpZVbBNWgMxqptQxOpt9Y/cOL1C3sQgSJWESBxzF1eQKwcoOOhfELt0kZ0l7awErnJpHemRFwNzUyKRA8lNONTolFwuWp8WpT5WDv1e/S5/tRKjTz+QQ4j/i6THHsbSoYw5YFYuKpuceVGuHUGfcaEAa1Huplzfkt2OT+nkLMbSFeZ7VK4S8yZ3SrLXeR/SlSWX9KEHeV510Osc0S5g+BcmvCYUU4dy13TElLJRWMl+EASgcA5yYIoVgl47lf8DpQp7ynt6Dw+r72A4FRVImmkoCQrc5qhoM3QIDAQAB

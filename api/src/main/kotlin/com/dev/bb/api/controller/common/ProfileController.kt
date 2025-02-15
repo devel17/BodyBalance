@@ -16,10 +16,10 @@ class ProfileController(val profileRepository: ProfileRepository) {
 
     @GetMapping
     @Operation(summary = "Получение профайла пользователя")
-    fun getAll(): Nothing = TODO()
+    fun getAll() = profileRepository.findAll()
 
     @PostMapping
     @Operation(summary = "Создание профайла пользователя")
-    fun create(profile: Profile) = profileRepository.save(profile);
+    fun create(profile: Profile) = profileRepository.save(profile)
 
 }

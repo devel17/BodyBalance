@@ -4,7 +4,7 @@
  */
 package com.dev.bb.model
 
-import com.dev.bb.api.model.enum.FoodType
+import com.dev.bb.api.enum.FoodType
 import jakarta.persistence.Entity
 import java.util.*
 

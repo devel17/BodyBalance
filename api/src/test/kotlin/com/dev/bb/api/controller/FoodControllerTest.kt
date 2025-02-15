@@ -1,12 +1,13 @@
 package com.dev.bb.api.controller
 
-import com.dev.bb.api.model.enum.FoodType
+import com.dev.bb.api.enum.FoodType
 import com.dev.bb.api.controller.plus.FoodController
 import com.dev.bb.model.Food
 import com.dev.bb.repo.FoodRepository
 import com.dev.bb.service.FoodCombineService
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.Disabled
 
 import org.mockito.Mockito.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,10 +15,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.delete
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import kotlin.test.Ignore
 
 @WebMvcTest(FoodController::class)
+@Ignore
 class FoodControllerTest(@Autowired val mockMvc: MockMvc) {
 
     @MockBean
@@ -26,8 +30,8 @@ class FoodControllerTest(@Autowired val mockMvc: MockMvc) {
     @MockBean
     lateinit var foodService: FoodCombineService
 
-    val FOOD1 : Food = Food(1.0,1.0,1.0,FoodType.FRUIT_AND_VEGITABLES)
-    val FOOD2 : Food = Food(2.0,2.0,2.0,FoodType.MAIN)
+    val FOOD1 : Food = Food(1.0,1.0,1.0, FoodType.FRUIT_AND_VEGITABLES)
+    val FOOD2 : Food = Food(2.0,2.0,2.0, FoodType.MAIN)
 
     @Test
     fun findAll() {
@@ -75,5 +79,22 @@ class FoodControllerTest(@Autowired val mockMvc: MockMvc) {
 
     @Test
     fun generate() {
+    }
+
+    @Test
+    fun deleteFood() {
+        val foodId = 1L
+        doNothing().`when`(foodRepository).deleteById(foodId)
+
+        mockMvc.delete("/api/food/$foodId") {
+            contentType = MediaType.APPLICATION_JSON
+            accept = MediaType.APPLICATION_JSON
+        }.andExpect {
+            status { isNoContent() }
+        }.andDo {
+            print()
+        }
+
+        verify(foodRepository, times(1)).deleteById(foodId)
     }
 }

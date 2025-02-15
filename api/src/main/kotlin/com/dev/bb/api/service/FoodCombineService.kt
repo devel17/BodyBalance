@@ -1,19 +1,22 @@
 package com.dev.bb.service
 
 import com.dev.bb.api.exception.custom.NotFoundEntityException
-import com.dev.bb.api.model.enum.FoodType
+import com.dev.bb.api.enum.FoodType
 import com.dev.bb.api.repo.ProfileRepository
 import com.dev.bb.model.Food
 import com.dev.bb.model.Profile
 import com.dev.bb.repo.FoodRepository
 import org.paukov.combinatorics3.Generator
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 import java.util.stream.Collectors
 import java.util.stream.Stream
 import kotlin.math.abs
 
 @Service
+@Scope(value = "prototype")
 class FoodCombineService(@Autowired val foodRepository: FoodRepository, val profileRepository: ProfileRepository):
     AFoodCombineService() {
 
@@ -26,7 +29,9 @@ class FoodCombineService(@Autowired val foodRepository: FoodRepository, val prof
 
     var calculatedFoodMap = mutableMapOf<Number, List<Food>>()
 
+
     override fun combine(profileId: Long): Map<Number, List<Food>> {
+        Thread.sleep(10000).also { println("wait 10 sec ${Thread.currentThread().name} ${LocalDateTime.now()} ${count++}") }
         val foods = foodRepository.findAll().toList().ifEmpty { Stream.generate(Food::rand).limit(FOOD_BUSKET_SIZE).toList() }
         val profile = profileRepository.findById(profileId).orElseThrow { throw NotFoundEntityException("Profile with id = $profileId not found!" ) }.also { println(it.kkal) }
         Generator.subset(foods)
@@ -56,6 +61,10 @@ class FoodCombineService(@Autowired val foodRepository: FoodRepository, val prof
         rez.carbon = foods.stream().mapToDouble { o: Food -> o.carbon }.sum()
         rez.name = foods.size.toString()
         return rez
+    }
+
+    companion object {
+        var count = 0
     }
 }
 

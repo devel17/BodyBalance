@@ -1,5 +1,6 @@
 package com.dev.bb.api.controller.plus
 
+import com.dev.bb.api.exception.ErrorDto
 import com.dev.bb.model.Food
 import com.dev.bb.model.Profile
 import com.dev.bb.repo.FoodRepository
@@ -15,7 +16,8 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
-
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.media.Schema
 
 @RestController
 @RequestMapping("/api/food")
@@ -43,6 +45,18 @@ class FoodController(private val foodRepository: FoodRepository) {
     fun getOne( @PathVariable id: Long) =
         foodRepository.findById(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "This food does not exist")
 
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Удалить продукт", description = "Удаляет продукт по его ID")
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "204", description = "Продукт успешно удален"),
+        ApiResponse(responseCode = "404", description = "Продукт не найден", 
+                    content = [Content(mediaType = "application/json", 
+                    schema = Schema(implementation = ErrorDto::class))])
+    ])
+    fun deleteFood(@Parameter(description = "ID продукта для удаления") @PathVariable id: Long) {
+        foodRepository.deleteById(id)
+    }
 
     companion object {
         const val INTERNAL_SERVER_ERROR_OBJECT: String = """
@@ -53,6 +67,4 @@ class FoodController(private val foodRepository: FoodRepository) {
         }
         """
     }
-
-
 }

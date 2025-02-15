@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.client.HttpClientErrorException.BadRequest
 import org.springframework.web.client.HttpClientErrorException.NotFound
 
-
 @RestControllerAdvice
 class RestExceptionHandler {
 
